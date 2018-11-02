@@ -1,3 +1,5 @@
 .vs
 Temp
 Library
+*.csproj
+*.sln
