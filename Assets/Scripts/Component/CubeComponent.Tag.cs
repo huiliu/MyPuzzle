@@ -38,6 +38,14 @@ public partial class CubeComponent
         this.RefreshTags();
     }
 
+    private void ResetTags()
+    {
+        foreach (var s in this.colorTag)
+            this.colorStatus[s.Key] = TagStatus.None;
+
+        this.RefreshTags();
+    }
+
     private Dictionary<MyColor, TagStatus> colorStatus = new Dictionary<MyColor, TagStatus>();
     private Dictionary<MyColor, Text> colorTag = new Dictionary<MyColor, Text>();
     public void HandleClick()

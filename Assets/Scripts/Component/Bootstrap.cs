@@ -24,7 +24,7 @@ public class Bootstrap
 
         this.LevelMenuNode.gameObject.SetActive(false);
         this.QuizMenuNode.gameObject.SetActive(false);
-        this.ResetButton.onClick.AddListener(() => { PuzzleComponent.Instance.Puzzle.Reset(); });
+        this.ResetButton.onClick.AddListener(() => { PuzzleComponent.Instance.Reset(); });
         this.ResultComponent.OnNext = () =>
         {
             ++this.CurrentQuizID;
@@ -195,7 +195,7 @@ public class Bootstrap
             this.Bootstrap.QuizMenuNode.gameObject.SetActive(true);
             this.Bootstrap.ResetButton.gameObject.SetActive(false);
             this.Bootstrap.ResultComponent.gameObject.SetActive(false);
-            PuzzleComponent.Instance.Reset();
+            PuzzleComponent.Instance.Clear();
         }
     }
 }

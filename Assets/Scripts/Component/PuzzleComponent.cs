@@ -25,7 +25,7 @@ public class PuzzleComponent
     public Puzzle Puzzle { get; private set; }
     public void StartGame(string level, int quizID)
     {
-        this.Reset();
+        this.Clear();
 
         string config = Config.GetQuiz(level, quizID);
         this.Puzzle = new Puzzle(config);
@@ -35,6 +35,14 @@ public class PuzzleComponent
         this.winFlag = false;
     }
 
+    public void Reset()
+    {
+        foreach (var c in this.cubes)
+            c.Reset();
+
+        this.Puzzle.Reset();
+    }
+
     #region Initialize Puzzle
     private void InitPuzzle()
     {
@@ -42,10 +50,10 @@ public class PuzzleComponent
         this.InitLabel();
     }
 
-    public void Reset()
+    public void Clear()
     {
         foreach (var c in this.cubes)
-            Destroy(c);
+            Destroy(c.gameObject);
 
         foreach (var r in this.rowLables)
             Destroy(r);
@@ -59,7 +67,7 @@ public class PuzzleComponent
         this.PaletteComponent.ResetPalette();
     }
 
-    private List<GameObject> cubes = new List<GameObject>();
+    private List<CubeComponent> cubes = new List<CubeComponent>();
     private void InitCube()
     {
         var cube = refs["Cube"];
@@ -81,7 +89,7 @@ public class PuzzleComponent
                 CubeComponent.OnDown = this.HandleOnDown;
                 CubeComponent.OnUp = this.HandleOnUp;
 
-                this.cubes.Add(newCube);
+                this.cubes.Add(CubeComponent);
             }
         }
     }

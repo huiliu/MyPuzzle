@@ -59,6 +59,11 @@ public partial class CubeComponent
         this.InitTags(new System.Collections.Generic.List<MyColor>(puzzle.Config.TagNums.Keys));
     }
 
+    public void Reset()
+    {
+        this.ResetTags();
+    }
+
     private void Update()
     {
         if (this.Cube == null || !this.Cube.IsDirty)
