@@ -6,13 +6,13 @@ using MyPuzzle;
 public class PaletteComponent
     : MonoBehaviour
 {
-    [SerializeField] private GameObject PaletteColorTemplate;
+    [SerializeField] private GameObject ToggleTemplate;
     [HideInInspector] public MyColor CurrentColor { get; private set; }
 
-    private float Height;
+    private ToggleGroup ToggleGroup;
     private void Awake()
     {
-        this.Height = this.PaletteColorTemplate.GetComponent<RectTransform>().rect.height;
+        this.ToggleGroup = this.gameObject.GetOrAddComponent<ToggleGroup>();
     }
 
     private MyColor DefaultColor;
@@ -21,18 +21,22 @@ public class PaletteComponent
     {
         this.ResetPalette();
 
-        var pos = Vector2.zero;
         foreach(var c in myColors)
         {
-            pos.y -= this.Height;
-
-            var go = Instantiate(this.PaletteColorTemplate);
+            var go = Instantiate(this.ToggleTemplate);
+            go.name = c.ToString();
             go.transform.SetParent(this.transform, false);
-            go.transform.localPosition = pos;
-            go.GetComponent<Image>().color = c.ToColor();
-            go.GetComponent<Button>().onClick.AddListener(() => this.CurrentColor = c);
-            this.colors.Add(go);
+            go.SetActiveEx(true);
 
+            var toggle = go.GetOrAddComponent<Toggle>();
+            toggle.group = this.ToggleGroup;
+            toggle.isOn = false;
+            toggle.onValueChanged.AddListener(delegate { this.ToggleValueChanged(toggle, c); });
+
+            var image = go.GetComponentInChildren<Image>();
+            image.color = c.ToColor();
+
+            this.colors.Add(go);
             this.DefaultColor = this.DefaultColor == MyColor.None ? c : this.DefaultColor;
         }
 
@@ -46,5 +50,11 @@ public class PaletteComponent
             GameObject.Destroy(go);
 
         this.colors.Clear();
+    }
+
+    private void ToggleValueChanged(Toggle toggle, MyColor myColor)
+    {
+        if (toggle.isOn)
+            this.CurrentColor = myColor;
     }
 }

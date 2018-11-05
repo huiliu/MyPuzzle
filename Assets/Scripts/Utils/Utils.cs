@@ -114,6 +114,15 @@ namespace MyPuzzle
             return Direction.None;
         }
 
+        public static T GetOrAddComponent<T>(this GameObject go) where T : MonoBehaviour
+        {
+            var c = go.GetComponent<T>();
+            if (c == null)
+                c = go.AddComponent<T>();
+
+            return c;
+        }
+
         public static void SetActiveEx(this GameObject go, bool flag)
         {
             if (go == null)

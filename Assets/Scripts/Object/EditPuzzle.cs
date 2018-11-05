@@ -9,7 +9,6 @@ namespace MyPuzzle
 {
     public class EditPuzzle : Puzzle
     {
-
         public EditPuzzle(string config) : base(config)
         {
         }
@@ -193,7 +192,5 @@ namespace MyPuzzle
 
             this.Config.SaveConfig(difficulty, index);
         }
-
-
     }
 }
