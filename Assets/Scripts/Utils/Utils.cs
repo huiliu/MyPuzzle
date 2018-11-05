@@ -124,5 +124,17 @@ namespace MyPuzzle
 
             go.SetActive(flag);
         }
+
+        public static Direction GetOppositeDirection(Direction direct)
+        {
+            switch (direct)
+            {
+                case Direction.Up: return Direction.Down;
+                case Direction.Down: return Direction.Up;
+                case Direction.Left: return Direction.Right;
+                case Direction.Right: return Direction.Left;
+                default:return Direction.None;
+            }
+        }
     }
 }

@@ -43,7 +43,7 @@ namespace MyPuzzle
 
         public void DrawLine(int r, int c, Direction direct, MyColor color)
         {
-            if (isBorderToOutside(r, c, direct))
+            if (! canDraw(r, c, direct, color))
                 return;
 
             drawLine(r, c, direct, color);
@@ -75,21 +75,73 @@ namespace MyPuzzle
             this.Cubes[r, c].IsDirty = true;
         }
 
-        private bool isBorderToOutside(int r, int c, Direction direct)
+        private bool canDraw(int r, int c, Direction direct, MyColor color)
         {
-            if (r == 0 && direct == Direction.Up)
-                return true;
+            Cube me = Cubes[r, c];
+            Cube targetCube = new Cube();
 
-            if (r == this.Config.Row - 1 && direct == Direction.Down)
-                return true;
+            if (! HasTargetCube(r, c, direct, ref targetCube))
+                return false;
 
-            if (c == 0 && direct == Direction.Left)
-                return true;
+            // 固定块前进颜色一致才行
+            if (me.IsBlock && ! me.IsConnectTo(direct, color))
+                return false;
 
-            if (c == this.Config.Col - 1 && direct == Direction.Right)
-                return true;
+            // 已经有两条连线，只能往已连接的方向前进
+            if (me.ConnectionNum(color) == 2 && ! me.IsConnectTo(direct, color))
+                return false;
 
-            return false;
+            // 目标快做同样两个检查
+            Direction oppositeDirection = Utils.GetOppositeDirection(direct);
+
+            if (targetCube.IsBlock && ! targetCube.IsConnectTo(oppositeDirection, color))
+                return false;
+
+            if (targetCube.ConnectionNum(color) == 2 && ! targetCube.IsConnectTo(oppositeDirection, color))
+                return false;
+
+            return true;
+        }
+
+        private bool HasTargetCube(int r, int c, Direction direct, ref Cube targetCube)
+        {
+            switch (direct)
+            {
+                case Direction.Up:
+                {
+                    if (r <= 0)
+                        return false;
+
+                    targetCube = Cubes[r - 1, c];
+                    return true;
+                }
+                case Direction.Down:
+                {
+                    if (r >= this.Config.Row - 1)
+                        return false;
+
+                    targetCube = Cubes[r + 1, c];
+                    return true;
+                }
+                case Direction.Left:
+                {
+                    if (c <= 0)
+                        return false;
+
+                    targetCube = Cubes[r, c - 1];
+                    return true;
+                }
+                case Direction.Right:
+                {
+                    if (c >= this.Config.Col - 1)
+                        return false;
+
+                    targetCube = Cubes[r, c + 1];
+                    return true;
+                }
+                default:
+                    return false;
+            }
         }
 
         public bool CheckResult()
