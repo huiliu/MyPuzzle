@@ -179,12 +179,7 @@ namespace MyPuzzle
             {
                 str += string.Format("|{0}", Utils.ColorToString(kvp.Key));
 
-                // 过滤掉结尾的-1。为了压缩数据长度
-                List<int> nums = kvp.Value;
-                while (nums[nums.Count - 1] == -1)
-                    nums.RemoveAt(nums.Count - 1);
-
-                foreach (var num in nums)
+                foreach (var num in compress(kvp.Value))
                     str += string.Format(",{0}", num);
             }
 
@@ -202,6 +197,47 @@ namespace MyPuzzle
             }
 
             return str;
+        }
+
+        private List<int> compress(List<int> list)
+        {
+            // 压缩数据长度
+            // 过滤掉结尾的-1，中间的连续n个-1变为 -2,n
+            int startPos = -1;
+            int endPos = -1;
+
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                if (list[i] != -1 || i == 0)
+                {
+                    if (startPos != -1)
+                    {
+                        if (list[i] != -1)
+                            endPos = i + 1;
+                        else
+                            endPos = 0;
+
+                        int n = startPos - endPos + 1;
+                        if (n > 2)
+                        {
+                            list.RemoveRange(endPos, n);
+                            list.InsertRange(endPos, new List<int>() { -2, n });
+                        }
+
+                        startPos = -1;
+                        endPos = -1;
+                    }
+                }
+                else
+                {
+                    if (i == list.Count - 1)
+                        list.RemoveAt(i);
+                    else if (startPos == -1)
+                        startPos = i;
+                }
+            }
+
+            return list;
         }
     }
 }

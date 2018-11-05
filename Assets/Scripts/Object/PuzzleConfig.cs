@@ -55,7 +55,19 @@ namespace MyPuzzle
                     MyColor color = Utils.StringToMyColor(temp[0]);
                     List<int> nums = new List<int>();
                     for (int j = 1; j < temp.Length && j <= this.Row + this.Col; j++)
-                        nums.Add(int.Parse(temp[j]));
+                    {
+                        int num = int.Parse(temp[j]);
+                        if (num == -2)
+                        {
+                            // -1，-1，...，-1
+                            // n个连续的-1省略为-2，,n
+                            int times = int.Parse(temp[++j]);
+                            for (int k =0; k < times; k++)
+                                nums.Add(-1);
+                        }
+                        else
+                            nums.Add(num);
+                    }
 
                     // 补足后面的-1
                     while (nums.Count < this.Row + this.Col)
