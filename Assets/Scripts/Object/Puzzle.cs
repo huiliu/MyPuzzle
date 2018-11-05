@@ -88,7 +88,7 @@ namespace MyPuzzle
                 return false;
 
             // 已经有其他颜色不能画线
-            if (me.HasOtherColor(color))
+            if (! me.IsBlock && me.HasOtherColor(color))
                 return false;
 
             // 已经有两条连线，只能往已连接的方向前进
@@ -101,7 +101,7 @@ namespace MyPuzzle
             if (targetCube.IsBlock && ! targetCube.IsConnectTo(oppositeDirection, color))
                 return false;
 
-            if (targetCube.HasOtherColor(color))
+            if (! targetCube.IsBlock && targetCube.HasOtherColor(color))
                 return false;
 
             if (targetCube.ConnectionNum(color) == 2 && ! targetCube.IsConnectTo(oppositeDirection, color))
