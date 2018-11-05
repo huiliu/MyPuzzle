@@ -13,14 +13,14 @@ namespace MyPuzzle
         public int Row { get; set; }
         public int Col { get; set; }
         public Dictionary<MyColor, List<int>> TagNums { get; set; }
-        public List<string[]> Blocks { get; private set; }
+        public List<string[]> Blocks { get; set; }
 
         public PuzzleConfig(int row, int col)
         {
             this.Row = row;
             this.Col = col;
-            TagNums = new Dictionary<MyColor, List<int>>();
-            Blocks = new List<string[]>();
+            this.TagNums = new Dictionary<MyColor, List<int>>();
+            this.Blocks = new List<string[]>();
         }
 
         public PuzzleConfig(string config)
@@ -40,8 +40,8 @@ namespace MyPuzzle
             this.Row = int.Parse(temp[0]);
             this.Col = int.Parse(temp[1]);
 
-            TagNums = new Dictionary<MyColor, List<int>>();
-            Blocks = new List<string[]>();
+            this.TagNums = new Dictionary<MyColor, List<int>>();
+            this.Blocks = new List<string[]>();
 
             for (int i = 1; i < strs.Length; i++)
             {
@@ -73,7 +73,7 @@ namespace MyPuzzle
                     while (nums.Count < this.Row + this.Col)
                         nums.Add(-1);
                     
-                    TagNums.Add(color, nums);
+                    this.TagNums.Add(color, nums);
                 }
                 else
                 {
@@ -82,6 +82,73 @@ namespace MyPuzzle
                     this.Blocks.Add(temp);
                 }
             }
+        }
+
+        public void SaveConfig(string difficulty, int index)
+        {
+            Config.WriteQuiz(difficulty, index, this.ToString());
+        }
+
+        public override string ToString()
+        {
+            string str = string.Format("{0},{1}", this.Row, this.Col);
+
+            foreach (var kvp in this.TagNums)
+            {
+                str += string.Format("|{0}", Utils.ColorToString(kvp.Key));
+
+                foreach (var num in compress(kvp.Value))
+                    str += string.Format(",{0}", num);
+            }
+
+            foreach (var block in this.Blocks)
+            {
+                foreach (var s in block)
+                    str += string.Format(",{0}", s);
+            }
+
+            return str;
+        }
+
+        private List<int> compress(List<int> list)
+        {
+            // 压缩数据长度
+            // 过滤掉结尾的-1，中间的连续n个-1变为 -2,n
+            int startPos = -1;
+            int endPos = -1;
+
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                if (list[i] != -1 || i == 0)
+                {
+                    if (startPos != -1)
+                    {
+                        if (list[i] != -1)
+                            endPos = i + 1;
+                        else
+                            endPos = 0;
+
+                        int n = startPos - endPos + 1;
+                        if (n > 2)
+                        {
+                            list.RemoveRange(endPos, n);
+                            list.InsertRange(endPos, new List<int>() { -2, n });
+                        }
+
+                        startPos = -1;
+                        endPos = -1;
+                    }
+                }
+                else
+                {
+                    if (i == list.Count - 1)
+                        list.RemoveAt(i);
+                    else if (startPos == -1)
+                        startPos = i;
+                }
+            }
+
+            return list;
         }
     }
 }

@@ -147,6 +147,11 @@ namespace MyPuzzle
             SetNum(index, -1, color);
         }
 
+        public void SetBlock(int r, int c, bool isBlock)
+        {
+            this.Cubes[r, c].SetBlockState(isBlock);
+        }
+
         public void Clear()
         {
             Dictionary<MyColor, List<int>> newTagNums = new Dictionary<MyColor, List<int>>();
@@ -162,26 +167,14 @@ namespace MyPuzzle
             for (int r = 0; r < this.Config.Row; r++)
             {
                 for (int c = 0; c < this.Config.Col; c++)
-                    Cubes[r, c].Reset();
+                    this.Cubes[r, c].Reset();
             }
         }
 
         public void Save(string difficulty, int index)
         {
-            MyPuzzle.Config.WriteQuiz(difficulty, index, this.ToString());
-        }
-
-        public override string ToString()
-        {
-            string str = string.Format("{0},{1}", this.Config.Row, this.Config.Col);
-
-            foreach (var kvp in this.Config.TagNums)
-            {
-                str += string.Format("|{0}", Utils.ColorToString(kvp.Key));
-
-                foreach (var num in compress(kvp.Value))
-                    str += string.Format(",{0}", num);
-            }
+            // 保存前先把block信息刷新（改动的时候同步刷有些麻烦，最后统一刷快一些也方便一些）
+            this.Config.Blocks.Clear();
 
             for (int r = 0; r < this.Config.Row; r++)
             {
@@ -191,53 +184,16 @@ namespace MyPuzzle
                     if (! cube.IsBlock)
                         continue;
 
-                    str += string.Format("|{0},{1},{2},{3},{4},{5}", r, c, Utils.ColorToString(cube.UpColor), Utils.ColorToString(cube.DownColor),
-                                                                           Utils.ColorToString(cube.LeftColor), Utils.ColorToString(cube.RightColor));
+                    string[] str = new string[] { r.ToString(), c.ToString(), Utils.ColorToString(cube.UpColor), Utils.ColorToString(cube.DownColor),
+                                                                              Utils.ColorToString(cube.LeftColor), Utils.ColorToString(cube.RightColor), };
+
+                    this.Config.Blocks.Add(str);
                 }
             }
 
-            return str;
+            this.Config.SaveConfig(difficulty, index);
         }
 
-        private List<int> compress(List<int> list)
-        {
-            // 压缩数据长度
-            // 过滤掉结尾的-1，中间的连续n个-1变为 -2,n
-            int startPos = -1;
-            int endPos = -1;
 
-            for (int i = list.Count - 1; i >= 0; i--)
-            {
-                if (list[i] != -1 || i == 0)
-                {
-                    if (startPos != -1)
-                    {
-                        if (list[i] != -1)
-                            endPos = i + 1;
-                        else
-                            endPos = 0;
-
-                        int n = startPos - endPos + 1;
-                        if (n > 2)
-                        {
-                            list.RemoveRange(endPos, n);
-                            list.InsertRange(endPos, new List<int>() { -2, n });
-                        }
-
-                        startPos = -1;
-                        endPos = -1;
-                    }
-                }
-                else
-                {
-                    if (i == list.Count - 1)
-                        list.RemoveAt(i);
-                    else if (startPos == -1)
-                        startPos = i;
-                }
-            }
-
-            return list;
-        }
     }
 }
