@@ -181,7 +181,7 @@ namespace MyPuzzle
 
                     // 玩家可以画的方块只能是空或有一进一出两条连线。两条线颜色不一样的情况可以不用检查。下面的检查及最后检查连通关系的时候会检查出来
                     int cn = cube.ConnectionNum();
-                    if (! cube.IsBlock && (cn != 2 || cn != 0))
+                    if (! cube.IsBlock && (cn != 2 && cn != 0))
                         return false;
 
                     if (r < this.Config.Row - 1)
