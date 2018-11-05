@@ -7,7 +7,7 @@ namespace MyPuzzle
 {
     public class Config
     {
-        static ConfigIni.ConfigIni configIni = new ConfigIni.ConfigIni(Application.dataPath + "/Config/quiz.ini");
+        static ConfigIni.ConfigIni configIni = new ConfigIni.ConfigIni(Application.streamingAssetsPath + "/Config/quiz.ini");
 
         public static StringCollection GetDiffcultTypes()
         {
