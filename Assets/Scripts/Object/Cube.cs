@@ -35,6 +35,11 @@ namespace MyPuzzle
             this.IsDirty = true;
         }
 
+        public bool IsConnectTo(Direction direct)
+        {
+            return getColorByDirect(direct) != MyColor.None;
+        }
+
         public bool IsConnectTo(Direction direct, MyColor color)
         {
             return getColorByDirect(direct) == color;

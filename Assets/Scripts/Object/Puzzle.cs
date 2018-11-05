@@ -87,24 +87,17 @@ namespace MyPuzzle
             if (me.IsBlock && ! me.IsConnectTo(direct, color))
                 return false;
 
-            // 已经有其他颜色不能画线
-            if (! me.IsBlock && me.HasOtherColor(color))
+            // 非固定块，已经有两条连线，只能往已连接的方向前进
+            if (!me.IsBlock && me.ConnectionNum() == 2 && ! me.IsConnectTo(direct))
                 return false;
 
-            // 已经有两条连线，只能往已连接的方向前进
-            if (me.ConnectionNum(color) == 2 && ! me.IsConnectTo(direct, color))
-                return false;
-
-            // 目标快做同样三个检查
+            // 目标快做同样两个检查
             Direction oppositeDirection = Utils.GetOppositeDirection(direct);
 
             if (targetCube.IsBlock && ! targetCube.IsConnectTo(oppositeDirection, color))
                 return false;
 
-            if (! targetCube.IsBlock && targetCube.HasOtherColor(color))
-                return false;
-
-            if (targetCube.ConnectionNum(color) == 2 && ! targetCube.IsConnectTo(oppositeDirection, color))
+            if (! targetCube.IsBlock && targetCube.ConnectionNum() == 2 && ! targetCube.IsConnectTo(oppositeDirection))
                 return false;
 
             return true;
