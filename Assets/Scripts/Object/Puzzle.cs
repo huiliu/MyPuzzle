@@ -80,21 +80,28 @@ namespace MyPuzzle
             Cube me = Cubes[r, c];
             Cube targetCube = new Cube();
 
-            if (! HasTargetCube(r, c, direct, ref targetCube))
+            if (! hasTargetCube(r, c, direct, ref targetCube))
                 return false;
 
             // 固定块前进颜色一致才行
             if (me.IsBlock && ! me.IsConnectTo(direct, color))
                 return false;
 
+            // 已经有其他颜色不能画线
+            if (me.HasOtherColor(color))
+                return false;
+
             // 已经有两条连线，只能往已连接的方向前进
             if (me.ConnectionNum(color) == 2 && ! me.IsConnectTo(direct, color))
                 return false;
 
-            // 目标快做同样两个检查
+            // 目标快做同样三个检查
             Direction oppositeDirection = Utils.GetOppositeDirection(direct);
 
             if (targetCube.IsBlock && ! targetCube.IsConnectTo(oppositeDirection, color))
+                return false;
+
+            if (targetCube.HasOtherColor(color))
                 return false;
 
             if (targetCube.ConnectionNum(color) == 2 && ! targetCube.IsConnectTo(oppositeDirection, color))
@@ -103,7 +110,7 @@ namespace MyPuzzle
             return true;
         }
 
-        private bool HasTargetCube(int r, int c, Direction direct, ref Cube targetCube)
+        private bool hasTargetCube(int r, int c, Direction direct, ref Cube targetCube)
         {
             switch (direct)
             {
@@ -161,7 +168,7 @@ namespace MyPuzzle
             return true;
         }
 
-        // 检查是否有断口
+        // 检查连线数量是否正确，以及是否断口
         // 边角的检查不完全，但最后一步的检查可以弥补，所以就不添加逻辑了
         public bool CheckConnection()
         {
@@ -170,15 +177,22 @@ namespace MyPuzzle
             {
                 for (int c = 0; c < this.Config.Col; c++)
                 {
+                    Cube cube = this.Cubes[r, c];
+
+                    // 玩家可以画的方块只能是空或有一进一出两条连线。两条线颜色不一样的情况可以不用检查。下面的检查及最后检查连通关系的时候会检查出来
+                    int cn = cube.ConnectionNum();
+                    if (! cube.IsBlock && (cn != 2 || cn != 0))
+                        return false;
+
                     if (r < this.Config.Row - 1)
                     {
-                        if (this.Cubes[r, c].DownColor != this.Cubes[r + 1, c].UpColor)
+                        if (cube.DownColor != this.Cubes[r + 1, c].UpColor)
                             return false;
                     }
 
                     if (c < this.Config.Col - 1)
                     {
-                        if (this.Cubes[r, c].RightColor != this.Cubes[r, c + 1].LeftColor)
+                        if (cube.RightColor != this.Cubes[r, c + 1].LeftColor)
                             return false;
                     }
                 }
@@ -192,21 +206,11 @@ namespace MyPuzzle
         {
             bool[,] ret = new bool[this.Config.Row, this.Config.Col];
 
-            // 先检查每一格的连接是否合法。并记录合法的连接
+            // 记录合法的连接
             for (int r = 0; r < this.Config.Row; r++)
             {
                 for (int c = 0; c < this.Config.Col; c++)
-                {
-                    int cn = this.Cubes[r, c].ConnectionNum(color);
-                    if (cn == 1 || cn == 3)
-                        return false;
-
-                    // 玩家的连线不允许出现十字
-                    if (cn == 4 && ! this.Cubes[r, c].IsBlock)
-                        return false;
-
-                    ret[r, c] = (cn != 0);
-                }
+                    ret[r, c] = (this.Cubes[r, c].ConnectionNum(color) != 0);
             }
 
             // 检查行上的数字
