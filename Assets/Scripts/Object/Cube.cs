@@ -45,6 +45,35 @@ namespace MyPuzzle
             return this.UpColor == color && this.DownColor == color && this.LeftColor == color && this.RightColor == color;
         }
 
+        public bool HasOtherColor(MyColor color)
+        {
+            if (this.UpColor != MyColor.None && this.UpColor != color)
+                return true;
+
+            if (this.DownColor != MyColor.None && this.DownColor != color)
+                return true;
+
+            if (this.LeftColor != MyColor.None && this.LeftColor != color)
+                return true;
+
+            if (this.RightColor != MyColor.None && this.RightColor != color)
+                return true;
+
+            return false;
+        }
+
+        // 该方块上有几条连线
+        public int ConnectionNum()
+        {
+            int num = 0;
+            if (this.UpColor != MyColor.None) num++;
+            if (this.DownColor != MyColor.None) num++;
+            if (this.LeftColor != MyColor.None) num++;
+            if (this.RightColor != MyColor.None) num++;
+            return num;
+        }
+
+        // 该方块上有几条指定颜色的连线
         public int ConnectionNum(MyColor color)
         {
             int num = 0;
@@ -117,11 +146,6 @@ namespace MyPuzzle
             this.RightColor = MyColor.None;
             this.IsBlock = false;
             this.IsDirty = true;
-        }
-
-        public override string ToString()
-        {
-            return string.Format("{0},{1},{2},{3}", this.UpColor, this.DownColor, this.LeftColor, this.RightColor);
         }
 
         private MyColor getColorByDirect(Direction direct)
