@@ -28,5 +28,10 @@ namespace MyPuzzle
         {
             return configIni.ReadString(difficulty, index.ToString(), "");
         }
+
+        public static void WriteQuiz(string difficulty, int index, string str)
+        {
+            configIni.WriteString(difficulty, index.ToString(), str);
+        }
     }
 }

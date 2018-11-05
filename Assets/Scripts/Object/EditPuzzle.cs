@@ -166,6 +166,11 @@ namespace MyPuzzle
             }
         }
 
+        public void Save(string difficulty, int index)
+        {
+            MyPuzzle.Config.WriteQuiz(difficulty, index, this.ToString());
+        }
+
         public override string ToString()
         {
             string str = string.Format("{0},{1}", this.Config.Row, this.Config.Col);
@@ -173,7 +178,13 @@ namespace MyPuzzle
             foreach (var kvp in this.Config.TagNums)
             {
                 str += string.Format("|{0}", Utils.ColorToString(kvp.Key));
-                foreach (var num in kvp.Value)
+
+                // 过滤掉结尾的-1。为了压缩数据长度
+                List<int> nums = kvp.Value;
+                while (nums[nums.Count - 1] == -1)
+                    nums.RemoveAt(nums.Count - 1);
+
+                foreach (var num in nums)
                     str += string.Format(",{0}", num);
             }
 
