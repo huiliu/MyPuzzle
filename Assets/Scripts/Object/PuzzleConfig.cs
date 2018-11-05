@@ -28,7 +28,7 @@ namespace MyPuzzle
             // 获取config信息
             /* 配置中的信息为一串"|"分割的字符串，含义依次是
              * 行数和列数，用","隔开
-             * 颜色及该颜色在每一行和每一列上的数值（没有则填-1），用","隔开.可以有多组
+             * 颜色及该颜色在每一行和每一列上的数值（没有则填-1），用","隔开.可以有多组。为简化数据，后面的-1可以省略
              * 预配置方块信息，6个元素一组，依次是所在行，所在列，上下左右四个方向的颜色，没有颜色填"n"，用","隔开，可以有多组
              * 第一个元素是数字还是字符来区分是颜色配置还是预配置方块
              */
@@ -54,8 +54,12 @@ namespace MyPuzzle
 
                     MyColor color = Utils.StringToMyColor(temp[0]);
                     List<int> nums = new List<int>();
-                    for (int j = 1; j < temp.Length; j++)
+                    for (int j = 1; j < temp.Length && j <= this.Row + this.Col; j++)
                         nums.Add(int.Parse(temp[j]));
+
+                    // 补足后面的-1
+                    while (nums.Count < this.Row + this.Col)
+                        nums.Add(-1);
                     
                     TagNums.Add(color, nums);
                 }
