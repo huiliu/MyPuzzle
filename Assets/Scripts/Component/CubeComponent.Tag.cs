@@ -16,13 +16,6 @@ public partial class CubeComponent
     [SerializeField] private GameObject TagNode;
     [SerializeField] private Text TagTemplate;
 
-    private Button Button;
-    private void Awake()
-    {
-        this.Button = this.GetComponent<Button>();
-        this.Button.onClick.AddListener(this.HandleClick);
-    }
-
     private void InitTags(List<MyColor> myColors)
     {
         foreach(var c in myColors)
@@ -48,7 +41,7 @@ public partial class CubeComponent
 
     private Dictionary<MyColor, TagStatus> colorStatus = new Dictionary<MyColor, TagStatus>();
     private Dictionary<MyColor, Text> colorTag = new Dictionary<MyColor, Text>();
-    public void HandleClick()
+    private void HandleClick()
     {
         if (this.Cube.IsBlock)
             return;

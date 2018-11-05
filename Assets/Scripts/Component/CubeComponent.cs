@@ -109,15 +109,18 @@ public partial class CubeComponent
         OnDraw.SafeInvoke(this.Row, this.Col, dir);
         Debug.Log(string.Format("Mouse Exit! {0}/{1}", this.Row, this.Col));
         this.Center.gameObject.SetActive(false);
+        this.clickFlag = false;
     }
 
     public Action OnDown;
     public Action OnUp;
+    private bool clickFlag = false;
     public void OnPointerDown(PointerEventData eventData)
     {
         this.OnDown.SafeInvoke();
         this.Center.gameObject.SetActive(true);
         Debug.Log(string.Format("Pointer Down! {0}/{1}", this.Row, this.Col));
+        this.clickFlag = true;
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -125,6 +128,8 @@ public partial class CubeComponent
         this.OnUp.SafeInvoke();
         this.Center.gameObject.SetActive(false);
         Debug.Log(string.Format("Pointer Up! {0}/{1}", this.Row, this.Col));
+        if (this.clickFlag)
+            this.HandleClick();
     }
     #endregion
 }
