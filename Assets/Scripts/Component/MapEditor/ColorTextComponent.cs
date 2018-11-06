@@ -13,11 +13,12 @@ namespace MapEditor
     {
         private static string ObjectPoolTag = "TextInput";
 
-        private int idx;
+        public int idx;
         public void Setup(int idx, bool isRow)
         {
             this.idx = idx;
             this.GetComponent<GridLayoutGroup>().startAxis = isRow ? GridLayoutGroup.Axis.Vertical : GridLayoutGroup.Axis.Horizontal;
+            this.Refresh();
         }
 
         private int lastColorCount = 0;
@@ -43,20 +44,10 @@ namespace MapEditor
             {
                 var go = ObjectPool.Instance.Take(ObjectPoolTag);
                 go.transform.SetParent(this.transform, false);
-
-                go.GetComponent<InputField>().onValueChanged.AddListener((v) =>
-                {
-                    PuzzleComponent.Instance.Puzzle.SetNum(idx, int.Parse(v), c);
-                });
-
-                var text = go.GetComponentsInChildren<Text>();
-                foreach(var t in text)
-                {
-                    t.color = c.ToColor();
-                    t.text = PuzzleComponent.Instance.Puzzle.Config.TagNums[c][idx].ToString();
-                }
-
                 go.SetActiveEx(true);
+
+                var input = go.GetComponent<ColorInputField>();
+                input.Setup(c, this.idx);
 
                 this.inputs.Add(go);
             }

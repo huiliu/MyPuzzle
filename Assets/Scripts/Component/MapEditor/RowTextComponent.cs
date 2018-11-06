@@ -31,6 +31,15 @@ namespace MapEditor
 
         private void Update()
         {
+            var row = PuzzleComponent.Instance.Puzzle.Config.Row;
+            var col = PuzzleComponent.Instance.Puzzle.Config.Col;
+
+            if (this.lastRowCount == row && this.lastColCount == col)
+                return;
+
+            this.lastRowCount = row;
+            this.lastColCount = col;
+
             if (this.IsRow)
                 this.RefreshRow();
             else
@@ -41,27 +50,22 @@ namespace MapEditor
         private int lastRowCount = 0;
         private void RefreshRow()
         {
-            var count = PuzzleComponent.Instance.Puzzle.Config.Row;
-            if (this.lastRowCount == count)
-                return;
-
-            this.lastRowCount = count;
             foreach (var rt in this.rowTexts)
                 ObjectPool.Instance.Return(ObjectPoolTag, rt);
 
             this.rowTexts.Clear();
 
-            for (var i = 0; i < count; ++i)
+            for (var i = 0; i < this.lastRowCount; ++i)
             {
                 var go = ObjectPool.Instance.Take(ObjectPoolTag);
-                go.GetComponent<ColorTextComponent>().Setup(i, true);
                 go.transform.SetParent(this.transform, false);
                 go.SetActive(true);
+                go.GetComponent<ColorTextComponent>().Setup(i, true);
 
                 this.rowTexts.Add(go);
             }
 
-            this.sizeDelta.y = count * cellSize.y;
+            this.sizeDelta.y = this.lastRowCount * cellSize.y;
             this.RectTransform.sizeDelta = sizeDelta;
         }
 
@@ -69,27 +73,22 @@ namespace MapEditor
         private int lastColCount = 0;
         private void RefreshCol()
         {
-            var count = PuzzleComponent.Instance.Puzzle.Config.Col;
-            if (this.lastColCount == count)
-                return;
-
-            this.lastColCount = count;
             foreach (var rt in this.colTexts)
                 ObjectPool.Instance.Return(ObjectPoolTag, rt);
 
             this.colTexts.Clear();
 
-            for (var i = 0; i < count; ++i)
+            for (var i = 0; i < this.lastColCount; ++i)
             {
                 var go = ObjectPool.Instance.Take(ObjectPoolTag);
-                go.GetComponent<ColorTextComponent>().Setup(i + this.lastColCount, false);
                 go.transform.SetParent(this.transform, false);
                 go.SetActive(true);
+                go.GetComponent<ColorTextComponent>().Setup(i + PuzzleComponent.Instance.Puzzle.Config.Row, false);
 
                 this.colTexts.Add(go);
             }
 
-            this.sizeDelta.x = count * cellSize.x;
+            this.sizeDelta.x = this.lastColCount * cellSize.x;
             this.RectTransform.sizeDelta = sizeDelta;
         }
     }
