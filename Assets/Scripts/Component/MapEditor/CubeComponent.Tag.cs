@@ -73,6 +73,9 @@ namespace MapEditor
         {
             foreach (var kvp in this.colorStatus)
             {
+                if (!this.colorTag.ContainsKey(kvp.Key))
+                    continue;
+
                 this.colorTag[kvp.Key].text = this.GetTag(kvp.Value);
                 this.colorTag[kvp.Key].enabled = kvp.Value != TagStatus.None;
             }

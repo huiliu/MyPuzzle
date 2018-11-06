@@ -33,10 +33,10 @@ namespace MapEditor
             this.RectTransform = this.PuzzleNode.gameObject.GetComponent<RectTransform>();
             this.InitPuzzle("");
 
-            this.IncRowButton.onClick.AddListener(() => { this.Puzzle.AddRow(); this.RefreshPuzzle(); });
-            this.DecRowButton.onClick.AddListener(() => { this.Puzzle.DelRow(); this.RefreshPuzzle(); });
-            this.IncColButton.onClick.AddListener(() => { this.Puzzle.AddCol(); this.RefreshPuzzle(); });
-            this.DecColButton.onClick.AddListener(() => { this.Puzzle.DelCol(); this.RefreshPuzzle(); });
+            this.IncRowButton.onClick.AddListener(() => { this.Puzzle.AddCol(); this.RefreshPuzzle(); });
+            this.DecRowButton.onClick.AddListener(() => { this.Puzzle.DelCol(); this.RefreshPuzzle(); });
+            this.IncColButton.onClick.AddListener(() => { this.Puzzle.AddRow(); this.RefreshPuzzle(); });
+            this.DecColButton.onClick.AddListener(() => { this.Puzzle.DelRow(); this.RefreshPuzzle(); });
         }
 
         private void InitPuzzle(string config)
@@ -63,6 +63,14 @@ namespace MapEditor
         {
             this.InitPuzzle("");
             this.RefreshPuzzle();
+        }
+
+        public void Clear()
+        {
+            foreach (var c in this.cubes)
+                c.GetComponent<CubeComponent>().Reset();
+
+            this.Puzzle.Reset();
         }
 
         public void Save()
@@ -101,7 +109,10 @@ namespace MapEditor
             this.thisRect.sizeDelta = sizeDelta;
 
             foreach (var go in this.cubes)
+            {
+                go.GetComponent<CubeComponent>().Reset();
                 ObjectPool.Instance.Return("Cube", go);
+            }
             this.cubes.Clear();
 
             var totoal = 0;
