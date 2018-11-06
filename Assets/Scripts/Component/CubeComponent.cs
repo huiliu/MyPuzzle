@@ -93,9 +93,6 @@ public partial class CubeComponent
     public Action<int, int, Direction> OnDraw;
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Vector2 localPos = this.transform.InverseTransformPoint(eventData.position);
-        var dir = localPos.ToDirection();
-
         //OnDraw.SafeInvoke(this.Row, this.Col, dir);
         Debug.Log(string.Format("Mouse Enter! {0}/{1}", this.Row, this.Col));
         //this.Center.gameObject.SetActive(true);

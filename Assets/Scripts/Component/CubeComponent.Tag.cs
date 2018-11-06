@@ -11,7 +11,6 @@ enum TagStatus
 }
 
 public partial class CubeComponent
-    : MonoBehaviour
 {
     [SerializeField] private GameObject TagNode;
     [SerializeField] private Text TagTemplate;
