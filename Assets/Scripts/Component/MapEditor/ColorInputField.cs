@@ -46,7 +46,8 @@ namespace MapEditor
         {
             var value = -1;
             if (!string.IsNullOrEmpty(v))
-                value = int.Parse(v);
+                if (! int.TryParse(v, out value))
+                    value = -1;
 
             PuzzleComponent.Instance.Puzzle.SetNum(this.idx, value, this.MyColor);
             this.Refresh();

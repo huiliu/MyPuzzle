@@ -46,7 +46,8 @@ namespace MyPuzzle
 
         public void DrawLine(int r, int c, Direction direct, MyColor color)
         {
-            if (! canDraw(r, c, direct, color))
+            // 编辑模式不需要检查
+            if (! this.IsEditMode && ! canDraw(r, c, direct, color))
                 return;
 
             drawLine(r, c, direct, color);
@@ -83,10 +84,6 @@ namespace MyPuzzle
 
             if (! hasTargetCube(r, c, direct, ref targetCube))
                 return false;
-
-            // 编辑模式不做下面的检查
-            if (this.IsEditMode)
-                return true;
 
             // 固定块前进颜色一致才行
             if (me.IsBlock && ! me.IsConnectTo(direct, color))
