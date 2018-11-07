@@ -16,7 +16,7 @@ namespace MyPuzzle
         public Puzzle(string config)
         {
             if (config == string.Empty)
-                config = "2,2|r,-1,-1,-1,-1";
+                config = "10,10|r";
 
             this.Config = new PuzzleConfig(config);
             this.Cubes = new Cube[this.Config.Row, this.Config.Col];
