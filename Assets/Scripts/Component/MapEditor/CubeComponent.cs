@@ -121,11 +121,15 @@ namespace MapEditor
         {
             this.OnUp.SafeInvoke();
             this.Center.gameObject.SetActive(false);
-            if (this.clickFlag)
-                this.HandleClick();
 
             if (eventData.button == PointerEventData.InputButton.Right)
+            {
                 this.Cube.SetBlockState(!this.Cube.IsBlock);
+                return;
+            }
+
+            if (this.clickFlag)
+                this.HandleClick();
         }
         #endregion
     }
