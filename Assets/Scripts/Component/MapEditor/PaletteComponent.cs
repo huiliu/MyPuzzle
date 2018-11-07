@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections;
+﻿#define EditMode
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -27,16 +27,20 @@ namespace MapEditor
             this.InitColor(MyColor.Blue);
             this.InitColor(MyColor.Yellow);
 
+            var pcc = null as PaletteColorComponent;
             foreach (var c in colors)
-                this.color2Go[c].SetColorState(true);
+            {
+                pcc = this.color2Go[c];
+                pcc.SetColorState(true);
+            }
+
+            pcc.SetSelected(true);
         }
 
         public void Reset()
         {
             foreach(var kvp in this.color2Go)
-                Destroy(kvp.Value.gameObject);
-
-            this.color2Go.Clear();
+                Destroy(kvp.Value);
         }
 
         private Dictionary<MyColor, PaletteColorComponent> color2Go = new Dictionary<MyColor, PaletteColorComponent>();

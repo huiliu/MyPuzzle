@@ -17,7 +17,7 @@ namespace MapEditor
         [SerializeField] private Transform PuzzleNode;
         [SerializeField] private Dropdown DifficultDropdown;
         [SerializeField] private Text TitleText;
-        [SerializeField] private GameObject MenuNode;
+        [SerializeField] private GameObject ResultDialogNode;
 
         public static PuzzleComponent Instance { get; private set; }
 
@@ -42,8 +42,6 @@ namespace MapEditor
 
         private void InitPuzzle(string config)
         {
-            this.MenuNode.SetActiveEx(true);
-
             this.Puzzle = new EditPuzzle(config);
             this.PaletteComponent.InitPalette(new List<MyColor>(this.Puzzle.Config.TagNums.Keys));
             this.RefreshPuzzle();
@@ -89,6 +87,8 @@ namespace MapEditor
         public void CheckResult()
         {
             var r = this.Puzzle.CheckResult();
+            this.ResultDialogNode.SetActiveEx(true);
+            this.ResultDialogNode.GetComponent<CheckResultComponent>().SetResult(r.ToString());
             Debug.Log(string.Format("Result: {0}", r));
         }
 

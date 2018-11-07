@@ -50,6 +50,11 @@ namespace MapEditor
             this.ColorToggle.isOn = isOn;
         }
 
+        public void SetSelected(bool select)
+        {
+            this.SelectToggle.isOn = select;
+        }
+
         public void SetToggleGroup(ToggleGroup toggleGroup)
         {
             this.SelectToggle.group = toggleGroup;
