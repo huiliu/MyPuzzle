@@ -26,6 +26,10 @@ namespace MapEditor
             this.InitColor(MyColor.Green);
             this.InitColor(MyColor.Blue);
             this.InitColor(MyColor.Yellow);
+            this.InitColor(MyColor.Black);
+            this.InitColor(MyColor.Cyan);
+            this.InitColor(MyColor.Magenta);
+            this.InitColor(MyColor.White);
 
             var pcc = null as PaletteColorComponent;
             foreach (var c in colors)

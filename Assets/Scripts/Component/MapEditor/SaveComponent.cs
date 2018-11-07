@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using MyPuzzle;
 
 namespace MapEditor
 {
@@ -29,6 +30,14 @@ namespace MapEditor
 
         private void OnEnable()
         {
+            var diffs = Config.GetDiffcultTypes();
+            var l = new List<string>();
+            foreach (var d in diffs)
+                l.Add(d);
+
+            this.DifficultDropdown.ClearOptions();
+            this.DifficultDropdown.AddOptions(l);
+
             var currentDifficult = PuzzleComponent.Instance.CurrentDifficult;
             if (!string.IsNullOrEmpty(currentDifficult))
             {
