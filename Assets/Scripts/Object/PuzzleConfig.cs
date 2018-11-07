@@ -83,6 +83,14 @@ namespace MyPuzzle
             }
         }
 
+        public void SaveConfig(string difficulty)
+        {
+            var quizs = Config.GetQuizsByDifficulty(difficulty);
+            int index = int.Parse(quizs[quizs.Count - 1]) + 1;
+
+            Config.WriteQuiz(difficulty, index, this.ToString());
+        }
+
         public void SaveConfig(string difficulty, int index)
         {
             Config.WriteQuiz(difficulty, index, this.ToString());

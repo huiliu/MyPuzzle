@@ -74,7 +74,7 @@ public class Bootstrap
         this.CleanQuizMenu();
 
         var template = refs["QuizButton"];
-        var quizs = Config.GetQuizsNumByDifficulty(this.CurrentLevel);
+        var quizs = Config.GetQuizsByDifficulty(this.CurrentLevel);
         var count = quizs.Count;
         for(var i=0; i < count; ++i)
         {

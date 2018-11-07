@@ -16,7 +16,7 @@ namespace MyPuzzle
             return difficulties;
         }
 
-        public static StringCollection GetQuizsNumByDifficulty(string difficulty)
+        public static StringCollection GetQuizsByDifficulty(string difficulty)
         {
             StringCollection quiz = new StringCollection();
             configIni.ReadKeys(difficulty, quiz);
