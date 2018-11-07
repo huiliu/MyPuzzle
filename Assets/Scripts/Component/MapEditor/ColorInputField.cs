@@ -38,21 +38,17 @@ namespace MapEditor
             var l = PuzzleComponent.Instance.Puzzle.Config.TagNums[this.MyColor];
             var v = this.idx < l.Count ? l[idx] : -1;
 
-            var t = this.GetComponentInChildren<Text>();
-            t.color = this.MyColor.ToColor();
-            t.text = v.ToString();
+            this.InputField.textComponent.color = this.MyColor.ToColor();
+            this.InputField.text = v.ToString();
         }
 
         private void HandleOnValueChanged(string v)
         {
-            if (string.IsNullOrEmpty(v))
-                return;
+            var value = -1;
+            if (!string.IsNullOrEmpty(v))
+                value = int.Parse(v);
 
-            PuzzleComponent.Instance.Puzzle.SetNum(this.idx, int.Parse(v), this.MyColor);
-        }
-
-        private void Update()
-        {
+            PuzzleComponent.Instance.Puzzle.SetNum(this.idx, value, this.MyColor);
             this.Refresh();
         }
     }
