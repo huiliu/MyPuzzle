@@ -11,6 +11,7 @@ namespace MyPuzzle
     {
         public PuzzleConfig Config;
         public Cube[,] Cubes;
+        protected bool IsEditMode;
 
         public Puzzle(string config)
         {
@@ -32,6 +33,8 @@ namespace MyPuzzle
                 this.Cubes[r, c].SetColors(colors);
                 this.Cubes[r, c].SetBlockState(true);
             }
+
+            this.IsEditMode = false;
         }
 
         public void Reset()
@@ -61,10 +64,8 @@ namespace MyPuzzle
             if (r < 0 || r >= this.Config.Row || c < 0 || c >= this.Config.Col)
                 return;
 
-#if ! EditMode
-            if (this.Cubes[r, c].IsBlock)
+            if (this.Cubes[r, c].IsBlock && ! this.IsEditMode)
                 return;
-#endif
 
             // 已经有该颜色连接该方向。则删除
             if (this.Cubes[r, c].IsConnectTo(direct, color))
@@ -83,9 +84,10 @@ namespace MyPuzzle
             if (! hasTargetCube(r, c, direct, ref targetCube))
                 return false;
 
-#if EditMode
-            return true;    // 编辑模式不做下面的检查
-#else
+            // 编辑模式不做下面的检查
+            if (this.IsEditMode)
+                return true;
+
             // 固定块前进颜色一致才行
             if (me.IsBlock && ! me.IsConnectTo(direct, color))
                 return false;
@@ -104,7 +106,6 @@ namespace MyPuzzle
                 return false;
 
             return true;
-#endif
         }
 
         private bool hasTargetCube(int r, int c, Direction direct, ref Cube targetCube)

@@ -11,6 +11,7 @@ namespace MyPuzzle
     {
         public EditPuzzle(string config) : base(config)
         {
+            this.IsEditMode = true;
         }
 
         public void AddRow()

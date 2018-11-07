@@ -91,10 +91,8 @@ namespace MyPuzzle
 
         public void SetColor(Direction direct, MyColor color)
         {
-#if ! EditMode
             if (this.IsBlock)
                 return;
-#endif
 
             switch (direct)
             {
@@ -108,10 +106,8 @@ namespace MyPuzzle
 
         public void Clear(Direction direct)
         {
-#if ! EditMode
             if (this.IsBlock)
                 return;
-#endif
 
             switch (direct)
             {
@@ -141,10 +137,8 @@ namespace MyPuzzle
 
         public void Reset()
         {
-#if ! EditMode
             if (this.IsBlock)
                 return;
-#endif
 
             this.UpColor = MyColor.None;
             this.DownColor = MyColor.None;
