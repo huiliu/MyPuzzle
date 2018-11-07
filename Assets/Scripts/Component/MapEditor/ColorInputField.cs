@@ -12,10 +12,8 @@ namespace MapEditor
         : MonoBehaviour
     {
         private InputField InputField;
-        private Text[] Texts;
         private void Awake()
         {
-            this.Texts = this.GetComponentsInChildren<Text>();
             this.InputField = this.GetComponent<InputField>();
             this.InputField.onEndEdit.AddListener(this.HandleOnValueChanged);
         }
@@ -41,11 +39,8 @@ namespace MapEditor
             var v = this.idx < l.Count ? l[idx] : -1;
 
             var t = this.GetComponentInChildren<Text>();
-            //foreach(var t in this.Texts)
-            //{
-                t.color = this.MyColor.ToColor();
-                t.text = v.ToString();
-            //}
+            t.color = this.MyColor.ToColor();
+            t.text = v.ToString();
         }
 
         private void HandleOnValueChanged(string v)

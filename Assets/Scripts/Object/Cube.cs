@@ -136,6 +136,7 @@ namespace MyPuzzle
         public void SetBlockState(bool isBlock)
         {
             this.IsBlock = isBlock;
+            this.IsDirty = true;
         }
 
         public void Reset()

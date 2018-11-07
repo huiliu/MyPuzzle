@@ -18,8 +18,26 @@ namespace MapEditor
         [SerializeField] private GameObject TagNode;
         [SerializeField] private Text TagTemplate;
 
+        private void OnEnable()
+        {
+            PuzzleComponent.Instance.OnColorUpdate += this.HandleColorUpdate;
+        }
+
+        private void OnDisable()
+        {
+            PuzzleComponent.Instance.OnColorUpdate -= this.HandleColorUpdate;
+        }
+
+        private void HandleColorUpdate()
+        {
+            this.InitTags(new List<MyColor>(PuzzleComponent.Instance.Puzzle.Config.TagNums.Keys));
+        }
+
         private void InitTags(List<MyColor> myColors)
         {
+            foreach (var kvp in this.colorTag)
+                Destroy(kvp.Value.gameObject);
+
             foreach (var c in myColors)
             {
                 var go = Instantiate(this.TagTemplate);

@@ -11,7 +11,6 @@ namespace MapEditor
         : MonoBehaviour
         , IPointerDownHandler
         , IPointerUpHandler
-        , IPointerEnterHandler
         , IPointerExitHandler
     {
         [SerializeField] private Image UpLine;
@@ -35,6 +34,7 @@ namespace MapEditor
             this.RectTransform = this.GetComponent<RectTransform>();
             this.halfRectWidth = this.RectTransform.rect.width / 2;
             this.halfRectHeight = this.RectTransform.rect.height / 2;
+            this.DefaultColor = this.Background.color;
 
             this.InitPoint();
         }
@@ -67,6 +67,7 @@ namespace MapEditor
             this.ResetTags();
         }
 
+        private Color DefaultColor;
         private void Update()
         {
             if (this.Cube == null || !this.Cube.IsDirty)
@@ -86,6 +87,7 @@ namespace MapEditor
             this.LeftLine.color = this.Cube.LeftColor.ToColor();
             this.LeftLine.enabled = this.Cube.LeftColor != MyColor.None;
 
+            this.Background.color = this.DefaultColor;
             if (this.Cube.IsBlock)
             {
                 this.Background.color = this.BlockColor;
@@ -94,12 +96,6 @@ namespace MapEditor
 
         #region Event Handler
         public Action<int, int, Direction> OnDraw;
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            //OnDraw.SafeInvoke(this.Row, this.Col, dir);
-            Debug.Log(string.Format("Mouse Enter! {0}/{1}", this.Row, this.Col));
-            //this.Center.gameObject.SetActive(true);
-        }
 
         public void OnPointerExit(PointerEventData eventData)
         {
@@ -107,7 +103,6 @@ namespace MapEditor
             var dir = localPos.ToDirection();
 
             OnDraw.SafeInvoke(this.Row, this.Col, dir);
-            Debug.Log(string.Format("Mouse Exit! {0}/{1}", this.Row, this.Col));
             this.Center.gameObject.SetActive(false);
             this.clickFlag = false;
         }
@@ -119,7 +114,6 @@ namespace MapEditor
         {
             this.OnDown.SafeInvoke();
             this.Center.gameObject.SetActive(true);
-            Debug.Log(string.Format("Pointer Down! {0}/{1}", this.Row, this.Col));
             this.clickFlag = true;
         }
 
@@ -127,9 +121,11 @@ namespace MapEditor
         {
             this.OnUp.SafeInvoke();
             this.Center.gameObject.SetActive(false);
-            Debug.Log(string.Format("Pointer Up! {0}/{1}", this.Row, this.Col));
             if (this.clickFlag)
                 this.HandleClick();
+
+            if (eventData.button == PointerEventData.InputButton.Right)
+                this.Cube.SetBlockState(!this.Cube.IsBlock);
         }
         #endregion
     }

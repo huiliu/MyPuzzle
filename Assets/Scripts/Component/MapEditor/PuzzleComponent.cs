@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 using MyPuzzle;
 using System.Collections.Generic;
@@ -89,14 +90,17 @@ namespace MapEditor
             Debug.Log(string.Format("Result: {0}", r));
         }
 
+        public event Action OnColorUpdate;
         public void AddColor(MyColor myColor)
         {
             this.Puzzle.AddColor(myColor);
+            this.OnColorUpdate.SafeInvoke();
         }
 
         public void RemoveColor(MyColor myColor)
         {
             this.Puzzle.DelColor(myColor);
+            this.OnColorUpdate.SafeInvoke();
         }
 
         private Vector2 sizeDelta = Vector2.zero;
