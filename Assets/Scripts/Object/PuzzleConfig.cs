@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
-using System.Linq;
 
 namespace MyPuzzle
 {
@@ -94,61 +93,45 @@ namespace MyPuzzle
             string str = string.Format("{0},{1}", this.Row, this.Col);
 
             foreach (var kvp in this.TagNums)
-            {
-                str += string.Format("|{0}", Utils.ColorToString(kvp.Key));
-
-                foreach (var num in compress(kvp.Value))
-                    str += string.Format(",{0}", num);
-            }
+                str += string.Format("|{0}{1}", Utils.ColorToString(kvp.Key), compress(kvp.Value));
 
             foreach (var block in this.Blocks)
-            {
-                foreach (var s in block)
-                    str += string.Format(",{0}", s);
-            }
+                str += string.Format("|{0}", string.Join(",", block));
 
             return str;
         }
 
-        private List<int> compress(List<int> list)
+        private string compress(List<int> list)
         {
+            string str = string.Empty;
             // 压缩数据长度
             // 过滤掉结尾的-1，中间的连续n个-1变为 -2,n
             int startPos = -1;
-            int endPos = -1;
 
-            for (int i = list.Count - 1; i >= 0; i--)
+            for (int i = 0; i < list.Count; i++)
             {
-                if (list[i] != -1 || i == 0)
-                {
-                    if (startPos != -1)
-                    {
-                        if (list[i] != -1)
-                            endPos = i + 1;
-                        else
-                            endPos = 0;
+                if (list[i] == -1 && startPos == -1)
+                    startPos = i;
 
-                        int n = startPos - endPos + 1;
-                        if (n > 2)
-                        {
-                            list.RemoveRange(endPos, n);
-                            list.InsertRange(endPos, new List<int>() { -2, n });
-                        }
-
-                        startPos = -1;
-                        endPos = -1;
-                    }
-                }
-                else
+                if (list[i] != -1 && startPos != -1)
                 {
-                    if (i == list.Count - 1)
-                        list.RemoveAt(i);
-                    else if (startPos == -1)
-                        startPos = i;
+                    int num = i - startPos;
+
+                    if (num == 1)
+                        str += ",-1";
+                    else if (num == 2)
+                        str += ",-1,-1";
+                    else
+                        str += string.Format(",-2,{0}", num);
+
+                    startPos = -1;
                 }
+
+                if (list[i] != -1)
+                    str += string.Format(",{0}", list[i]);
             }
 
-            return list;
+            return str;
         }
     }
 }
