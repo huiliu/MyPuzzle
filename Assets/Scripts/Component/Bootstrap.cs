@@ -30,7 +30,13 @@ public class Bootstrap
             ++this.CurrentQuizID;
             this.ResultComponent.gameObject.SetActive(false);
             this.ResetButton.gameObject.SetActive(true);
-            PuzzleComponent.Instance.StartGame(this.CurrentLevel, this.CurrentQuizID);
+            if (!string.IsNullOrEmpty(Config.GetQuiz(this.CurrentLevel, this.CurrentQuizID)))
+                PuzzleComponent.Instance.StartGame(this.CurrentLevel, this.CurrentQuizID);
+            else
+            {
+                this.UndoCommandMgr.Undo();
+                this.UndoCommandMgr.Undo();
+            }
         };
 
         this.InitLevelMenu();

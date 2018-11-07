@@ -44,7 +44,9 @@ namespace MapEditor
         public void Reset()
         {
             foreach(var kvp in this.color2Go)
-                Destroy(kvp.Value);
+                Destroy(kvp.Value.gameObject);
+
+            this.color2Go.Clear();
         }
 
         private Dictionary<MyColor, PaletteColorComponent> color2Go = new Dictionary<MyColor, PaletteColorComponent>();
