@@ -16,7 +16,8 @@ namespace MapEditor
         [SerializeField] private PaletteComponent PaletteComponent;
         [SerializeField] private Transform PuzzleNode;
         [SerializeField] private Dropdown DifficultDropdown;
-        [SerializeField] private InputField LevelInputField;
+        [SerializeField] private Text TitleText;
+        [SerializeField] private GameObject MenuNode;
 
         public static PuzzleComponent Instance { get; private set; }
 
@@ -32,7 +33,6 @@ namespace MapEditor
 
             this.thisRect = this.GetComponent<RectTransform>();
             this.RectTransform = this.PuzzleNode.gameObject.GetComponent<RectTransform>();
-            this.InitPuzzle("");
 
             this.IncRowButton.onClick.AddListener(() => { this.Puzzle.AddCol(); this.RefreshPuzzle(); });
             this.DecRowButton.onClick.AddListener(() => { this.Puzzle.DelCol(); this.RefreshPuzzle(); });
@@ -42,28 +42,40 @@ namespace MapEditor
 
         private void InitPuzzle(string config)
         {
+            this.MenuNode.SetActiveEx(true);
+
             this.Puzzle = new EditPuzzle(config);
-            if (string.IsNullOrEmpty(config))
-            {
-                this.Puzzle.AddRow();
-                this.Puzzle.AddRow();
-                this.Puzzle.AddCol();
-                this.Puzzle.AddCol();
+            this.PaletteComponent.InitPalette(new List<MyColor>(this.Puzzle.Config.TagNums.Keys));
+            this.RefreshPuzzle();
+        }
 
-                this.PaletteComponent.InitPalette(new List<MyColor>());
-                this.RefreshPuzzle();
-            }
-            else
-            {
-                this.PaletteComponent.InitPalette(new List<MyColor>(this.Puzzle.Config.TagNums.Keys));
-            }
+        public string CurrentDifficult { get; private set; }
+        public int CurrentLevel { get; private set; }
+        public void NewPuzzle()
+        {
+            this.CurrentDifficult = "";
+            this.CurrentLevel = 0;
 
+            this.InitPuzzle("");
+            this.TitleText.gameObject.SetActiveEx(false);
+        }
+
+        public void LoadPuzzle(string difficult, int level)
+        {
+            this.CurrentDifficult = difficult;
+            this.CurrentLevel = level;
+
+            this.TitleText.text = string.Format("Current Difficult: [{0}] Level: [{1}]", difficult, level);
+            this.TitleText.gameObject.SetActiveEx(true);
+            var cfg = Config.GetQuiz(difficult, level);
+
+            this.InitPuzzle(cfg);
         }
 
         public void Reset()
         {
-            this.InitPuzzle("");
-            this.RefreshPuzzle();
+            this.PaletteComponent.Reset();
+            this.NewPuzzle();
         }
 
         public void Clear()
@@ -72,16 +84,6 @@ namespace MapEditor
                 c.GetComponent<CubeComponent>().Reset();
 
             this.Puzzle.Reset();
-        }
-
-        public void Save()
-        {
-            var i = this.DifficultDropdown.value;
-            var difficult = this.DifficultDropdown.options[i].text;
-
-            var level = int.Parse(this.LevelInputField.text);
-
-            this.Puzzle.Save(difficult, level);
         }
 
         public void CheckResult()

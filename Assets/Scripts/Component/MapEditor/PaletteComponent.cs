@@ -31,6 +31,14 @@ namespace MapEditor
                 this.color2Go[c].SetColorState(true);
         }
 
+        public void Reset()
+        {
+            foreach(var kvp in this.color2Go)
+                Destroy(kvp.Value.gameObject);
+
+            this.color2Go.Clear();
+        }
+
         private Dictionary<MyColor, PaletteColorComponent> color2Go = new Dictionary<MyColor, PaletteColorComponent>();
         private void InitColor(MyColor color)
         {

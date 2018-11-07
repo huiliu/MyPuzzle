@@ -37,6 +37,7 @@ namespace MapEditor
         {
             foreach (var kvp in this.colorTag)
                 Destroy(kvp.Value.gameObject);
+            this.colorTag.Clear();
 
             foreach (var c in myColors)
             {
