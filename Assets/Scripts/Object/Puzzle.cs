@@ -83,6 +83,9 @@ namespace MyPuzzle
             if (! hasTargetCube(r, c, direct, ref targetCube))
                 return false;
 
+#if EditMode
+            return true;    // 编辑模式不做下面的检查
+#else
             // 固定块前进颜色一致才行
             if (me.IsBlock && ! me.IsConnectTo(direct, color))
                 return false;
@@ -101,6 +104,7 @@ namespace MyPuzzle
                 return false;
 
             return true;
+#endif
         }
 
         private bool hasTargetCube(int r, int c, Direction direct, ref Cube targetCube)
