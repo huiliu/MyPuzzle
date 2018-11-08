@@ -11,6 +11,7 @@ public class PuzzleComponent
     [SerializeField] private int CellWidth;
     [SerializeField] private int CellHeigh;
     [SerializeField] private PaletteComponent PaletteComponent;
+    [SerializeField] private RectTransform GameBoard;
 
     public static PuzzleComponent Instance { get; private set; }
 
@@ -30,7 +31,7 @@ public class PuzzleComponent
         string config = Config.GetQuiz(level, quizID);
         this.Puzzle = new Puzzle(config);
         this.InitPuzzle();
-        this.PaletteComponent.Init(new List<MyColor>(this.Puzzle.Config.TagNums.Keys));
+        this.PaletteComponent.Init(new List<MyColor>(this.Puzzle.Config.TagNums.Keys), this.GameBoard.sizeDelta);
 
         this.winFlag = false;
     }
@@ -68,8 +69,13 @@ public class PuzzleComponent
     }
 
     private List<CubeComponent> cubes = new List<CubeComponent>();
+    private Vector2 sizeDelta = Vector2.zero;
     private void InitCube()
     {
+        this.sizeDelta.x = this.Puzzle.Config.Col * 32;
+        this.sizeDelta.y = this.Puzzle.Config.Row * 32;
+        this.GameBoard.sizeDelta = this.sizeDelta;
+
         var cube = refs["Cube"];
         var datum = refs["Datum"];
 
@@ -80,7 +86,6 @@ public class PuzzleComponent
                 GameObject newCube = Instantiate<GameObject>(cube);
                 newCube.name = string.Format("cube({0},{1})", r, c);
                 newCube.transform.SetParent(datum.transform);
-                newCube.transform.localPosition = new Vector3(c * this.CellWidth, -r * this.CellHeigh, 0);
                 newCube.SetActive(true);
 
                 var CubeComponent = newCube.GetComponent<CubeComponent>();
@@ -103,12 +108,16 @@ public class PuzzleComponent
         var rowNum = refs["RowNum"];
         var colNum = refs["ColNum"];
 
+        var xPos = -this.GameBoard.sizeDelta.x / 2 - 16;
+        var yPos = this.GameBoard.sizeDelta.y / 2 + 16;
+
         for (int r = 0; r < this.Puzzle.Config.Row; r++)
         {
             GameObject newRowNum = new GameObject();
             newRowNum.name = string.Format("rowNum({0})", r);
-            newRowNum.transform.SetParent(datum.transform);
-            newRowNum.transform.localPosition = new Vector3(-this.CellWidth, -r * this.CellHeigh, 0);
+            newRowNum.transform.SetParent(this.transform, false);
+            //newRowNum.transform.localPosition = new Vector3(-this.CellWidth, -r * this.CellHeigh, 0);
+            newRowNum.transform.localPosition = new Vector3(xPos, -r * this.CellHeigh + yPos - 32, 0);
             newRowNum.SetActive(true);
 
             this.rowLables.Add(newRowNum);
@@ -118,8 +127,9 @@ public class PuzzleComponent
         {
             var newColNum = new GameObject();
             newColNum.name = string.Format("colNum({0})", c);
-            newColNum.transform.SetParent(datum.transform);
-            newColNum.transform.localPosition = new Vector3(c * this.CellWidth, 0, 0);
+            newColNum.transform.SetParent(this.transform, false);
+            //newColNum.transform.localPosition = new Vector3(c * this.CellWidth, 0, 0);
+            newColNum.transform.localPosition = new Vector3(c * this.CellWidth + xPos + 32, yPos, 0);
             newColNum.SetActive(true);
 
             this.colLables.Add(newColNum);

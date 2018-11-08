@@ -9,17 +9,22 @@ public class PaletteComponent
     [SerializeField] private GameObject ToggleTemplate;
     [HideInInspector] public MyColor CurrentColor { get; private set; }
 
+    private GridLayoutGroup GridLayoutGroup;
+    private RectTransform RectTransform;
     private ToggleGroup ToggleGroup;
     private void Awake()
     {
+        this.GridLayoutGroup = this.GetComponent<GridLayoutGroup>();
+        this.RectTransform = this.GetComponent<RectTransform>();
         this.ToggleGroup = this.gameObject.GetOrAddComponent<ToggleGroup>();
     }
 
     private MyColor DefaultColor;
     private List<GameObject> colors = new List<GameObject>();
-    public void Init(List<MyColor> myColors)
+    public void Init(List<MyColor> myColors, Vector2 sizeDelta)
     {
         this.ResetPalette();
+        this.InitPosition(myColors.Count, sizeDelta);
 
         foreach(var c in myColors)
         {
@@ -41,6 +46,20 @@ public class PaletteComponent
         }
 
         this.CurrentColor = this.DefaultColor;
+    }
+
+    private void InitPosition(int cellCount, Vector2 wh)
+    {
+        var sizeDelta = this.RectTransform.sizeDelta;
+        sizeDelta.x = this.GridLayoutGroup.cellSize.x;
+        sizeDelta.y = cellCount * this.GridLayoutGroup.cellSize.y + this.GridLayoutGroup.spacing.y;
+        this.RectTransform.sizeDelta = sizeDelta;
+
+        var pos = wh / 2;
+        pos.x += 64;
+        pos.y = 0;
+
+        this.transform.localPosition = pos;
     }
 
     public void ResetPalette()
