@@ -139,7 +139,7 @@ public class PuzzleComponent
         var rowPos = Vector2.zero;
         var colPos = Vector2.zero;
         colPos.x = -16;
-        colPos.y = 16;
+        colPos.y = -16;
         foreach (var kvp in this.Puzzle.Config.TagNums)
         {
             MyColor color = kvp.Key;
