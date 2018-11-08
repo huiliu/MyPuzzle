@@ -28,7 +28,7 @@ namespace MapEditor
         private Vector2 RightPoint;
         private Vector2 DownPoint;
         private Vector2 LeftPoint;
-        private void Start()
+        private void Awake()
         {
             this.Background = this.GetComponent<Image>();
             this.RectTransform = this.GetComponent<RectTransform>();
@@ -122,14 +122,14 @@ namespace MapEditor
             this.OnUp.SafeInvoke();
             this.Center.gameObject.SetActive(false);
 
-            if (eventData.button == PointerEventData.InputButton.Right)
-            {
-                this.Cube.SetBlockState(!this.Cube.IsBlock);
-                return;
-            }
 
             if (this.clickFlag)
-                this.HandleClick();
+            {
+                if (eventData.button == PointerEventData.InputButton.Right)
+                    this.Cube.SetBlockState(!this.Cube.IsBlock);
+                else
+                    this.HandleClick();
+            }
         }
         #endregion
     }
