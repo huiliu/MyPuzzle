@@ -148,15 +148,15 @@ namespace MyPuzzle
 
         public bool CheckResult()
         {
-            if (! CheckConnection())
+            if (! checkConnection())
                 return false;
 
             foreach (var color in this.Config.TagNums.Keys)
             {
-                if (! CheckRowAndColByColor(color))
+                if (! checkRowAndColByColor(color))
                     return false;
 
-                if (! CheckCircle(color))
+                if (! checkCircle(color))
                     return false;
             }
 
@@ -165,7 +165,7 @@ namespace MyPuzzle
 
         // 检查连线数量是否正确，以及是否断口
         // 边角的检查不完全，但最后一步的检查可以弥补，所以就不添加逻辑了
-        public bool CheckConnection()
+        private bool checkConnection()
         {
             // 只要检查下方和右方即可
             for (int r = 0; r < this.Config.Row; r++)
@@ -197,7 +197,7 @@ namespace MyPuzzle
         }
 
         // 检查是否符合行列的数字
-        public bool CheckRowAndColByColor(MyColor color)
+        private bool checkRowAndColByColor(MyColor color)
         {
             bool[,] ret = new bool[this.Config.Row, this.Config.Col];
 
@@ -250,7 +250,7 @@ namespace MyPuzzle
         }
 
         // 检查是否只有一个环
-        private bool CheckCircle(MyColor color)
+        private bool checkCircle(MyColor color)
         {
             // 现在用的办法：找到一个位置开始一路向前走，直到走回来。看一共经过了几个位置，再看看数量是否和不为0的位置数量相同
 

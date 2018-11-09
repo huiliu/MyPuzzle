@@ -164,11 +164,11 @@ namespace MapEditor
         {
             this.DrawFlag = false;
 
-            if (this.Puzzle.CheckResult())
+            /*if (this.Puzzle.CheckResult())
             {
-                //this.OnWin();
-                //this.winFlag = true;
-            }
+                this.OnWin();
+                this.winFlag = true;
+            }*/
         }
 
     }
